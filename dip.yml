@@ -1,0 +1,67 @@
+version: '2'
+
+environment:
+  RAILS_ENV: development
+
+compose:
+  files:
+    - docker-compose.yml
+
+interaction:
+  sh:
+    service: backend
+    command: /bin/bash
+    compose_run_options: [no-deps]
+
+  bundle:
+    service: backend
+    command: bundle
+    compose_run_options: [no-deps]
+
+  rake:
+    service: backend
+    command: bundle exec rake
+
+  rails:
+    service: backend
+    command: bundle exec rails
+    subcommands:
+      s:
+        service: rails
+        compose_run_options: [service-ports]
+
+  yarn:
+    service: backend
+    command: yarn
+    compose_run_options: [no-deps]
+
+  minitest:
+    service: backend
+    environment:
+      RAILS_ENV: test
+    command: bundle exec rails test
+
+  cop:
+    service: backend
+    command: bundle exec rubocop
+    compose_run_options: [no-deps]
+
+  psql:
+    service: postgres
+    command: psql -h postgres -U postgres -d postgres
+
+  inspect_all:
+    service: backend
+      - dip bundle exec license_finder
+      - dip bundle exec rails test
+      - dip bundle exec rails_best_practices .
+      - dip bundle exec bundle-audit
+      - dip bundle exec brakeman
+
+provision:
+  - dip compose down --volumes
+  - dip compose up -d postgres
+  - dip yarn install
+  - dip sh -c "./bin/setup 2> /dev/null; exit 0"
+  - dip sh -c ./bin/setup
+  - dip sh -c "RAILS_ENV=test ./bin/setup"
