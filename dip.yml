@@ -9,54 +9,54 @@ compose:
 
 interaction:
   sh:
+    description: Open bash shell in app's container
     service: backend
     command: /bin/bash
     compose_run_options: [no-deps]
 
   bundle:
+    description: Run bundler command
     service: backend
     command: bundle
     compose_run_options: [no-deps]
 
   rake:
+    description: Run rake command
     service: backend
     command: bundle exec rake
 
   rails:
+    description: Run rails command
     service: backend
     command: bundle exec rails
     subcommands:
       s:
+        description: Start rails server
         service: rails
         compose_run_options: [service-ports]
 
   yarn:
+    description: Run yarn command
     service: backend
     command: yarn
-    compose_run_options: [no-deps]
 
   minitest:
+    description: Run minitest
     service: backend
     environment:
       RAILS_ENV: test
     command: bundle exec rails test
 
   cop:
+    description: Run rubocop
     service: backend
+    default_args: -a
     command: bundle exec rubocop
-    compose_run_options: [no-deps]
 
   psql:
+    description: Run psql console
     service: postgres
     command: psql -h postgres -U postgres -d postgres
-
-  inspect_all:
-    service: backend
-      - dip bundle exec license_finder
-      - dip bundle exec rails test
-      - dip bundle exec rails_best_practices .
-      - dip bundle exec bundle-audit
-      - dip bundle exec brakeman
 
 provision:
   - dip compose down --volumes
