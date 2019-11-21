@@ -59,7 +59,7 @@ interaction:
     command: psql -h postgres -U postgres -d postgres
 
 provision:
-  - dip compose down --volumes
+  - dip compose down
   - dip compose up -d postgres
   - dip yarn install
   - dip sh -c "./bin/setup 2> /dev/null; exit 0"
