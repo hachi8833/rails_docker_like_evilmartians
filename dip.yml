@@ -1,4 +1,4 @@
-version: '2'
+version: '4'
 
 environment:
   RAILS_ENV: development
@@ -9,7 +9,7 @@ compose:
 
 interaction:
   sh:
-    description: Open bash shell in app's container
+    description: Open the app container bash shell
     service: backend
     command: /bin/bash
     compose_run_options: [no-deps]
@@ -57,6 +57,15 @@ interaction:
     description: Run psql console
     service: postgres
     command: psql -h postgres -U postgres -d postgres
+
+  inspect_all:
+    description: Run all checkers
+    service: backend
+    command: bundle exec license_finder
+    command: bundle exec rails test
+    command: bundle exec rails_best_practices .
+    command: bundle exec bundle-audit
+    command: bundle exec brakeman
 
 provision:
   - dip compose down
