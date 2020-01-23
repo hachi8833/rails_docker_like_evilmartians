@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   app: &app
@@ -6,12 +6,12 @@ services:
       context: .
       dockerfile: ./.dockerdev/Dockerfile
       args:
-        RUBY_VERSION: '2.6.5-slim-buster'
-        PG_MAJOR: '11'
-        NODE_MAJOR: '11'
-        YARN_VERSION: '1.19.1'
-        BUNDLER_VERSION: '2.0.2'
-    image: yourapp_docker:1.0.0
+        RUBY_VERSION: "2.7.0-slim-buster"
+        PG_MAJOR: "12"
+        NODE_MAJOR: "12"
+        YARN_VERSION: "1.21.1"
+        BUNDLER_VERSION: "2.1.2"
+    image: enno_docker:1.0.0
     tmpfs:
       - /tmp
 
@@ -38,23 +38,24 @@ services:
       - EDITOR=vi
     depends_on:
       - postgres
+      - webpacker
     env_file: .env
 
   runner:
     <<: *backend
     command: /bin/bash
     ports:
-      - '3000:3000'
-      - '3002:3002'
+      - "3000:3000"
+      - "3002:3002"
 
   rails:
     <<: *backend
     command: bundle exec rails server -b 0.0.0.0
     ports:
-      - '3000:3000'
+      - "3000:3000"
 
   postgres:
-    image: postgres:11.1
+    image: postgres:12
     volumes:
       - .psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
@@ -69,7 +70,7 @@ services:
     <<: *app
     command: ./bin/webpack-dev-server
     ports:
-      - '3035:3035'
+      - "3035:3035"
     volumes:
       - .:/app:cached
       - bundle:/bundle
