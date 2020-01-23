@@ -39,6 +39,7 @@ interaction:
     description: Run yarn command
     service: backend
     command: yarn
+    compose_run_options: [no-deps]
 
   minitest:
     description: Run minitest
@@ -52,6 +53,7 @@ interaction:
     service: backend
     default_args: -a
     command: bundle exec rubocop
+    compose_run_options: [no-deps]
 
   psql:
     description: Run psql console
@@ -68,9 +70,9 @@ interaction:
     command: bundle exec brakeman
 
 provision:
-  - dip compose down
   - dip compose up -d postgres
-  - dip yarn install
-  - dip sh -c "./bin/setup 2> /dev/null; exit 0"
-  - dip sh -c ./bin/setup
-  - dip sh -c "RAILS_ENV=test ./bin/setup"
+  - dip compose up -d webpacker
+  - dip yarn install --check-files
+  - dip sh -c "rails db:prepare 2> /dev/null; exit 0"
+  - dip sh -c "rails db:prepare"
+  - dip sh -c "RAILS_ENV=test rails db:prepare"
