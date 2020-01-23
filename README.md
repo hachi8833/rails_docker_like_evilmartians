@@ -5,13 +5,13 @@ Sample repo for rails + docker + docker-compose + dip, with respect to Evilmarti
 
 * macOS: 10.15.1（Catalina）
 * [Docker for Mac](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
-    * Docker: 19.03.4
+    * Docker: 19.03.5
     * Docker-compose: 1.24.1
     * (Add Dockerhub account)
-* Rails: 6.0.1
-* Ruby: 2.6.5
+* Rails: 6.0.2
+* Ruby: 2.7.0
 * [dip]([dip](https://github.com/bibendi/dip))
-* Git: 2.24.0
+* Git: 2.25.0
     * Use [git-flow](https://danielkummer.github.io/git-flow-cheatsheet/index.ja_JP.html)
 
 ## Setup
