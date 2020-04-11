@@ -29,7 +29,7 @@ Sample repo for rails + docker + docker-compose + dip, with respect to Evilmarti
 7. `dip provision` to setup database connections and envs.
 8. `git checkin` to commit the updated schema.
 9. `dip minitest` to perfom the initial test.
-1-. add `config.hosts << "localhost"` and `config.web_console.whitelisted_ips = '0.0.0.0/0'` to config/environments/development.rb
+10. add `config.hosts << "localhost"` and `config.web_console.whitelisted_ips = '0.0.0.0/0'` to config/environments/development.rb
 11. `git checkin` to commit the change.
 12. `dip rails s` to start Rails.
 13. Open `http://localhost:3000/` on your browser to show the welcome page.
