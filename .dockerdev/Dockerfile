@@ -1,34 +1,47 @@
 ARG RUBY_VERSION
 # 後述
-FROM ruby:$RUBY_VERSION
+FROM ruby:$RUBY_VERSION-slim-buster
 
 ARG PG_MAJOR
 ARG NODE_MAJOR
 ARG YARN_VERSION
 
+# 共通の依存関係
+RUN apt-get update -qq \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    build-essential \
+    gnupg2 \
+    curl \
+    less \
+    git \
+    shared-mime-info \
+  && apt-get clean \
+  && rm -rf /var/cache/apt/archives/* \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && truncate -s 0 /var/log/*log
+
+# PostgreSQLをsources listに追加
+RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+
+# NodeJSをsources listに追加
+RUN curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash -
+
+# Yarnをsources listに追加
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+  && echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list
+
 # 依存関係をインストール
-# 外部のAptfileでやってる（後ほどお楽しみに！）
-COPY .dockerdev/Aptfile /tmp/Aptfile
-RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade &&\
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends curl gnupg2 &&\
-    # ソースリストにPostgreSQLを追加
-    curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - &&\
-    echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list &&\
-    # ソースリストにNodeJSを追加
-    curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash - &&\
-    # ソースリストにYarnを追加
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - &&\
-    echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list &&\
-    apt-get update -qq &&\
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends\
-    build-essential\
-    postgresql-client-$PG_MAJOR\
-    libpq-dev\
-    nodejs\
-    yarn=$YARN_VERSION-1\
-    $(cat /tmp/Aptfile | xargs) &&\
-    apt-get clean &&\
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* &&\
+COPY ./.dockerdev/Aptfile /tmp/Aptfile
+RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    libpq-dev \
+    postgresql-client-$PG_MAJOR \
+    nodejs \
+    yarn=$YARN_VERSION-1 \
+    $(grep -Ev '^\s*#' /tmp/Aptfile | xargs) && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     truncate -s 0 /var/log/*log
 
 # bundlerとPATHを設定
