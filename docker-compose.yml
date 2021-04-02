@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.8"
 
 services:
   app: &app
@@ -6,12 +6,11 @@ services:
       context: .
       dockerfile: ./.dockerdev/Dockerfile
       args:
-        RUBY_VERSION: "2.7.0-slim-buster"
-        PG_MAJOR: "12"
+        RUBY_VERSION: "3.0.0-slim-buster"
+        PG_MAJOR: "13"
         NODE_MAJOR: "12"
-        YARN_VERSION: "1.21.1"
-        BUNDLER_VERSION: "2.1.2"
-    image: enno_docker:1.0.0
+        YARN_VERSION: "1.22.4"
+    image: yourapp_docker:1.0.0
     tmpfs:
       - /tmp
 

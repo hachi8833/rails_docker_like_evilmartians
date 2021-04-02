@@ -4,7 +4,6 @@ FROM ruby:$RUBY_VERSION
 
 ARG PG_MAJOR
 ARG NODE_MAJOR
-ARG BUNDLER_VERSION
 ARG YARN_VERSION
 
 # 依存関係をインストール
@@ -44,7 +43,6 @@ ENV PATH /app/bin:$BUNDLE_BIN:$PATH
 
 # RubyGemsをアップグレードして必要なバージョンのbundlerをインストール
 RUN gem update --system &&\
-    gem install bundler:$BUNDLER_VERSION &&\
     gem install rails &&\
     mkdir -p /app
 
