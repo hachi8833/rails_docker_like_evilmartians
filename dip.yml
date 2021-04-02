@@ -73,6 +73,5 @@ provision:
   - dip compose up -d postgres
   - dip compose up -d webpacker
   - dip yarn install --check-files
-  - dip sh -c "rails db:prepare 2> /dev/null; exit 0"
   - dip sh -c "rails db:prepare"
   - dip sh -c "RAILS_ENV=test rails db:prepare"
