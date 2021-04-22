@@ -1,4 +1,4 @@
-version: '4'
+version: '7.0'
 
 environment:
   RAILS_ENV: development
@@ -73,5 +73,5 @@ provision:
   - dip compose up -d postgres
   - dip compose up -d webpacker
   - dip yarn install --check-files
-  - dip sh -c "rails db:prepare"
-  - dip sh -c "RAILS_ENV=test rails db:prepare"
+  - dip rails db:prepare
+  - dip rails db:prepare RAILS_ENV=test
